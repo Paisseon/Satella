@@ -1,0 +1,12 @@
+Package: emt.paisseon.satella
+Name: Satella 2
+Author: Paisseon
+Maintainer: Paisseon
+Description: Modern in-app purchase cracker
+Version: 0.1b
+Depends:  ${ORION}, firmware (>= 12.2), ws.hbang.common (>= 1.17), com.opa334.altlist (>= 1.0.7)
+Conflicts: ai.paisseon.satella
+Architecture: iphoneos-arm
+Section: Tweaks
+Icon: https://paisseon.github.io/info/satella2.png
+SileoDepiction: https://paisseon.github.io/info/satella2.json

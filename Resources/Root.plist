@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>items</key>
+		<array>
+		
+			<!-- header -->
+		
+			<dict>
+				<key>cell</key>
+				<string>PSGroupCell</string>
+				<key>condensed</key>
+				<true/>
+				<key>headerCellClass</key>
+				<string>HBPackageNameHeaderCell</string>
+				<key>packageNameOverride</key>
+				<string>Satella</string>
+				<key>icon</key>
+				<string>icon.png</string>
+				<key>packageIdentifier</key>
+				<string>emt.paisseon.satella</string>
+			</dict>
+			
+		
+			<!-- basic feature toggles -->
+			
+			<dict>
+				<key>cell</key>
+				<string>PSGroupCell</string>
+				<key>label</key>
+				<string>General</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.satella.prefschanged</string>
+				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<true/>
+				<key>defaults</key>
+				<string>emt.paisseon.satella</string>
+				<key>key</key>
+				<string>enabled</string>
+				<key>label</key>
+				<string>Enable</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.satella.prefschanged</string>
+				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<false/>
+				<key>defaults</key>
+				<string>emt.paisseon.satella</string>
+				<key>key</key>
+				<string>receipts</string>
+				<key>label</key>
+				<string>Receipts</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.satella.prefschanged</string>
+				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<true/>
+				<key>defaults</key>
+				<string>emt.paisseon.satella</string>
+				<key>key</key>
+				<string>observer</string>
+				<key>label</key>
+				<string>Observer</string>
+			</dict>
+			
+			<!-- injection control -->
+			
+			<dict>
+				<key>cell</key>
+				<string>PSGroupCell</string>
+				<key>label</key>
+				<string>Injection</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.satella.prefschanged</string>
+				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<false/>
+				<key>defaults</key>
+				<string>emt.paisseon.satella</string>
+				<key>key</key>
+				<string>globalInjection</string>
+				<key>label</key>
+				<string>Global Injection</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.satella.prefschanged</string>
+				<key>cell</key>
+				<string>PSLinkListCell</string>
+				<key>defaultApplicationSwitchValue</key>
+				<false/>
+				<key>defaults</key>
+				<string>emt.paisseon.satella</string>
+				<key>detail</key>
+				<string>ATLApplicationListMultiSelectionController</string>
+				<key>includeIdentifiersInSearch</key>
+				<true/>
+				<key>key</key>
+				<string>apps</string>
+				<key>label</key>
+				<string>Enabled Apps</string>
+				<key>sections</key>
+				<array>
+					<dict>
+						<key>sectionType</key>
+						<string>User</string>
+					</dict>
+				</array>
+				<key>showIdentifiersAsSubtitle</key>
+				<true/>
+				<key>useSearchBar</key>
+				<true/>
+			</dict>
+			
+			<!-- links to my stuff -->
+			
+			<dict>
+				<key>cell</key>
+				<string>PSGroupCell</string>
+				<key>label</key>
+				<string>Links</string>
+			</dict>
+			<dict>
+				<key>cellClass</key>
+				<string>HBLinkTableCell</string>
+				<key>iconURL</key>
+				<string>https://avatars.githubusercontent.com/u/68789766</string>
+				<key>label</key>
+				<string>Source Code</string>
+				<key>subtitle</key>
+				<string>View on GitHub</string>
+				<key>url</key>
+				<string>https://github.com/paisseon/satella2</string>
+			</dict>
+			<dict>
+				<key>cellClass</key>
+				<string>HBLinkTableCell</string>
+				<key>iconURL</key>
+				<string>https://cdn.discordapp.com/icons/869579480375623720/a_0661a099789abaa5df7d2a18962a5d06.jpg</string>
+				<key>label</key>
+				<string>Join CyPwn</string>
+				<key>subtitle</key>
+				<string>The best jailbreak Discord server</string>
+				<key>url</key>
+				<string>https://discord.gg/cZ2gBRZvwW</string>
+			</dict>
+			
+			<!-- in my hand is a pen that will write a poem of me and you -->
+			
+			<dict>
+				<key>cell</key>
+				<string>PSGroupCell</string>
+				<key>footerText</key>
+				<string>
+	Do you know wherein lies the sin?
+	It wasn't in the partaking of the fruit of the tree.
+	
+	Do you know wherein lies the sin?
+	It wasn't in lending an ear to the serpent's enticements.
+	
+	Do you still not know wherein lies the sin?
+	Therein lies your sin.</string>
+			</dict>
+			
+		</array>
+		<key>title</key>
+		<string>Satella 2</string>
+	</dict>
+</plist>
