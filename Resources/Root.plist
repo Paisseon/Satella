@@ -17,7 +17,7 @@
 				<key>packageNameOverride</key>
 				<string>Satella</string>
 				<key>icon</key>
-				<string>icon.png</string>
+				<string>ic0n.png</string>
 				<key>packageIdentifier</key>
 				<string>emt.paisseon.satella</string>
 			</dict>

@@ -1,11 +1,11 @@
-export SYSROOT = $(THEOS)/sdks/iPhoneOS14.4.sdk/
-export ARCHS = arm64
-export PREFIX = $(THEOS)/toolchain/Xcode11.xctoolchain/usr/bin/
-export TARGET = iphone:clang:latest:12.2
+SYSROOT = $(THEOS)/sdks/iPhoneOS14.4.sdk/
+ARCHS = arm64
+PREFIX = $(THEOS)/toolchain/Xcode11.xctoolchain/usr/bin/
+TARGET = iphone:clang:latest:12.2
 
-export FINALPACKAGE = 1
-export DEBUG = 0
-export THEOS_LEAN_AND_MEAN = 1
+FINALPACKAGE = 1
+DEBUG = 0
+THEOS_LEAN_AND_MEAN = 1
 
 INSTALL_TARGET_PROCESSES = SpringBoard
 
@@ -13,16 +13,9 @@ TWEAK_NAME = Satella
 $(TWEAK_NAME)_FILES = $(shell find Sources/$(TWEAK_NAME) -name '*.swift') $(shell find Sources/$(TWEAK_NAME)C -name '*.m' -o -name '*.c' -o -name '*.mm' -o -name '*.cpp')
 $(TWEAK_NAME)_SWIFTFLAGS = -ISources/$(TWEAK_NAME)C/include
 $(TWEAK_NAME)_CFLAGS = -fobjc-arc -ISources/$(TWEAK_NAME)C/include
-$(TWEAK_NAME)_EXTRA_FRAMEWORKS = Cephei AltList StoreKit
+$(TWEAK_NAME)_EXTRA_FRAMEWORKS = Cephei
 
-export SYSROOT = $(THEOS)/sdks/iPhoneOS14.4.sdk/
-export ARCHS = arm64 arm64e
-export PREFIX = $(THEOS)/toolchain/Xcode11.xctoolchain/usr/bin/
-export TARGET = iphone:clang:latest:12.2
-
-export FINALPACKAGE = 1
-export DEBUG = 0
-export THEOS_LEAN_AND_MEAN = 1
+ARCHS = arm64 arm64e
 
 BUNDLE_NAME = SatellaPrefs
 $(BUNDLE_NAME)_FILES = $(shell find Sources/SatellaPrefs -name '*.swift')
