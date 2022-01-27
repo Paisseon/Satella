@@ -1,8 +1,7 @@
-import SatellaC
 import Cephei
 
 class Preferences {
-	static let shared = Preferences() // shared instance so we can check these values from the Satella class
+	static let shared = Preferences() // shared instance so we can check these values from the satella class
 	
 	private let preferences = HBPreferences(identifier: "emt.paisseon.satella")
 	private(set) var enabled: ObjCBool = true
@@ -27,8 +26,8 @@ class Preferences {
 	func shouldInit() -> Bool {
 		let altList = NSDictionary(contentsOfFile: "/var/mobile/Library/Preferences/emt.paisseon.satella.plist") as Dictionary? // get all enabled apps
 		
-		if !enabled.boolValue || Bundle.main.bundleIdentifier?.hasPrefix("com.apple.") == true {
-			return false // if satella is disabled or the target process is not a user app (for global injection)
+		if !enabled.boolValue {
+			return false // if satella is disabled
 		}
 		
 		if !globalInjection.boolValue {
