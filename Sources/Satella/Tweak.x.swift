@@ -4,12 +4,12 @@ import StoreKit
 import Cephei
 
 // groups to enable/disable features on init (see class Satella) instead of requiring a conditional every time
-struct MainGroup: HookGroup {}
-struct ReceiptGroup: HookGroup {}
-struct ObserverGroup: HookGroup {}
+struct Main: HookGroup {}
+struct Receipt: HookGroup {}
+struct Observer: HookGroup {}
 
 class TransactionHook: ClassHook<SKPaymentTransaction> {
-	typealias Group = MainGroup
+	typealias Group = Main
 
 	func transactionState() -> SKPaymentTransactionState {
 		if target.original != nil { // if the purchase is legitimate
@@ -52,7 +52,7 @@ class TransactionHook: ClassHook<SKPaymentTransaction> {
 }
 
 class ReceiptHook: ClassHook<SKPaymentTransaction> {
-	typealias Group = ReceiptGroup
+	typealias Group = Receipt
 	
 	func transactionReceipt() -> Data? {
 		/* you probably don't want to read the very very long, nonsensical strings that are used here 
@@ -72,9 +72,10 @@ class ReceiptHook: ClassHook<SKPaymentTransaction> {
 		let receiptId = Int.random(in: 1..<999999) // generate random number
 		let vendorId = UIDevice.current.identifierForVendor?.uuidString // get app uuid
 		let bundleId = Bundle.main.bundleIdentifier // get app bundle id
+		let uniqueId = Int.random(in: 1..<999999) // generate random number
 		
 		// template receipt with various stuff
-		let purchaseInfo = "{\n\t\"original-purchase-date-pst\" = \"2022-01-20 05:00:00 America/Los_Angeles\";\n\t\"purchase-date-ms\" = \"\(String(describing: now))\";\n\t\"unique-identifier\" = \"V2hlcmUgYXJlIHRoZSBrbml2ZXMuIC0gQ2hhcmEu\";\n\t\"original-transaction-id\" = \"satella-tId-\(String(describing: receiptId))\";\n\t\"bvrs\" = \"\(String(describing: bvrs))\";\n\t\"app-item-id\" = \"\(String(describing: receiptId))\";\n\t\"transaction-id\" = \"\(String(describing: receiptId))\";\n\t\"quantity\" = \"1\";\n\t\"original-purchase-date-ms\" = \"\(String(describing: now))\";\n\t\"unique-vendor-identifier\" = \"\(String(describing: vendorId))\";\n\t\"item-id\" = \"\(String(describing: receiptId))\";\n\t\"version-external-identifier\" = \"07151129\";\n\t\"product-id\" = \"\(String(describing: bundleId)).satella\";\n\t\"purchase-date\" = \"2022-01-20 12:00:00 Etc/GMT\";\n\t\"original-purchase-date\" = \"2022-01-20 12:00:00 Etc/GMT\";\n\t\"bid\" = \"\(String(describing: bundleId))\";\n\t\"purchase-date-pst\" = \"2022-01-20 05:00:00 America/Los_Angeles\";\n}"
+		let purchaseInfo = "{\n\t\"original-purchase-date-pst\" = \"2022-02-05 00:00:00 America/Los_Angeles\";\n\t\"purchase-date-ms\" = \"\(now)\";\n\t\"unique-identifier\" = \"satella-uid-\(uniqueId)\";\n\t\"original-transaction-id\" = \"satella-tId-\(receiptId)\";\n\t\"bvrs\" = \"\(String(describing: bvrs))\";\n\t\"app-item-id\" = \"\(receiptId)\";\n\t\"transaction-id\" = \"\(receiptId)\";\n\t\"quantity\" = \"1\";\n\t\"original-purchase-date-ms\" = \"\(now)\";\n\t\"unique-vendor-identifier\" = \"\(String(describing: vendorId))\";\n\t\"item-id\" = \"\(receiptId)\";\n\t\"version-external-identifier\" = \"07151129\";\n\t\"product-id\" = \"\(String(describing: bundleId)).satella\";\n\t\"purchase-date\" = \"2022-02-05 07:00:00 Etc/GMT\";\n\t\"original-purchase-date\" = \"2022-02-05 07:00:00 Etc/GMT\";\n\t\"bid\" = \"\(String(describing: bundleId))\";\n\t\"purchase-date-pst\" = \"2022-02-05 00:00:00 America/Los_Angeles\";\n}"
 		
 		let purchaseData = purchaseInfo.data(using: .utf8) // convert to data
 		var purchaseB64: String? = nil
@@ -89,12 +90,16 @@ class ReceiptHook: ClassHook<SKPaymentTransaction> {
 			return nil
 		} // convert base64 into data for the final receipt
 		
+		// if let receiptPath = Bundle.main.appStoreReceiptURL?.path {
+		// 	NSData(data: finalReceipt).write(toFile: receiptPath, atomically: true)
+		// }
+		
 		return finalReceipt
 	}
 }
 
 class QueueHook: ClassHook<SKPaymentQueue> {
-	typealias Group = MainGroup
+	typealias Group = Main
 	
 	class func canMakePayments() -> Bool {
 		true // bypass in-app purchase restrictions from parental controls or whatever
@@ -102,7 +107,7 @@ class QueueHook: ClassHook<SKPaymentQueue> {
 }
 
 class RefreshHook: ClassHook<SKReceiptRefreshRequest> {
-	typealias Group = ReceiptGroup
+	typealias Group = Receipt
 	
 	func _wantsRevoked() -> Bool {
 		false // no revocations
@@ -114,7 +119,7 @@ class RefreshHook: ClassHook<SKReceiptRefreshRequest> {
 }
 
 class ObserverHook: ClassHook<SKPaymentQueue> {
-	typealias Group = ObserverGroup
+	typealias Group = Observer
 	
 	func addTransactionObserver(_ arg0: SKPaymentTransactionObserver) {
 		let tellaObserver = SatellaObserver.shared // get a shared instance of our observer
@@ -126,13 +131,14 @@ class ObserverHook: ClassHook<SKPaymentQueue> {
 class Satella: Tweak {
 	required init() { // determine what features to use
 		if Preferences.shared.shouldInit() {
-			MainGroup().activate()
+			Main().activate()
+			
 			if Preferences.shared.receipts.boolValue == true {
-				ReceiptGroup().activate()
+				Receipt().activate()
 			}
 			
 			if Preferences.shared.observer.boolValue == true {
-				ObserverGroup().activate()
+				Observer().activate()
 			}
 		}
 	}
