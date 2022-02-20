@@ -67,18 +67,19 @@ class ReceiptHook: ClassHook<SKPaymentTransaction> {
 		signature, which is just meaningless data. then we cast this string as data and submit it to apple
 		*/
 	
-		let now:Int64 = Int64(Date().timeIntervalSince1970) * 1000 // get time since epoch in ms
-		let bvrs = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String // get the app version
+		let now       = Int64(Date().timeIntervalSince1970) * 1000 // get time since epoch in ms
+		let bvrs      = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String // get the app version
 		let receiptId = Int.random(in: 1..<999999) // generate random number
-		let vendorId = UIDevice.current.identifierForVendor?.uuidString // get app uuid
-		let bundleId = Bundle.main.bundleIdentifier // get app bundle id
-		let uniqueId = Int.random(in: 1..<999999) // generate random number
+		let vendorId  = UIDevice.current.identifierForVendor?.uuidString // get app uuid
+		let bundleId  = Bundle.main.bundleIdentifier // get app bundle id
+		let uniqueId  = Int.random(in: 1..<999999) // generate random number
 		
 		// template receipt with various stuff
 		let purchaseInfo = "{\n\t\"original-purchase-date-pst\" = \"2022-02-05 00:00:00 America/Los_Angeles\";\n\t\"purchase-date-ms\" = \"\(now)\";\n\t\"unique-identifier\" = \"satella-uid-\(uniqueId)\";\n\t\"original-transaction-id\" = \"satella-tId-\(receiptId)\";\n\t\"bvrs\" = \"\(String(describing: bvrs))\";\n\t\"app-item-id\" = \"\(receiptId)\";\n\t\"transaction-id\" = \"\(receiptId)\";\n\t\"quantity\" = \"1\";\n\t\"original-purchase-date-ms\" = \"\(now)\";\n\t\"unique-vendor-identifier\" = \"\(String(describing: vendorId))\";\n\t\"item-id\" = \"\(receiptId)\";\n\t\"version-external-identifier\" = \"07151129\";\n\t\"product-id\" = \"\(String(describing: bundleId)).satella\";\n\t\"purchase-date\" = \"2022-02-05 07:00:00 Etc/GMT\";\n\t\"original-purchase-date\" = \"2022-02-05 07:00:00 Etc/GMT\";\n\t\"bid\" = \"\(String(describing: bundleId))\";\n\t\"purchase-date-pst\" = \"2022-02-05 00:00:00 America/Los_Angeles\";\n}"
 		
-		let purchaseData = purchaseInfo.data(using: .utf8) // convert to data
+		let purchaseData         = purchaseInfo.data(using: .utf8) // convert to data
 		var purchaseB64: String? = nil
+		
 		if let purchaseData = purchaseData {
 			purchaseB64 = String(data: purchaseData, encoding: .utf8)
 		} // back into string with base64 encoding
@@ -122,7 +123,7 @@ class ObserverHook: ClassHook<SKPaymentQueue> {
 	typealias Group = Observer
 	
 	func addTransactionObserver(_ arg0: SKPaymentTransactionObserver) {
-		let tellaObserver = SatellaObserver.shared // get a shared instance of our observer
+		let tellaObserver      = SatellaObserver.shared // get a shared instance of our observer
 		tellaObserver.observer = arg0 // set the shared instance's observer ivar to the app's observer
 		orig.addTransactionObserver(tellaObserver) // replace the app's observer with our hacked one
 	}

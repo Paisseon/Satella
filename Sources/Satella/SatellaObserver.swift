@@ -2,9 +2,10 @@ import SatellaC
 import StoreKit
 
 class SatellaObserver: NSObject, SKPaymentTransactionObserver {
-	public var observer: SKPaymentTransactionObserver? = nil // the real observer– we use it because it has the code to handle purchases
-	private var purchases = [SKPaymentTransaction]() // our list of purchases to send to the real observer
 	static let shared = SatellaObserver() // use a singleton
+	
+	public var observer: SKPaymentTransactionObserver? = nil // the real observer– we use it because it has the code to handle purchases
+	private var purchases                              = [SKPaymentTransaction]() // our list of purchases to send to the real observer
 	
 	func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
 		for transaction in transactions { // loop through new transactions

@@ -18,7 +18,7 @@ $(TWEAK_NAME)_EXTRA_FRAMEWORKS = Cephei
 ARCHS = arm64 arm64e
 
 BUNDLE_NAME = SatellaPrefs
-$(BUNDLE_NAME)_FILES = $(shell find Sources/SatellaPrefs -name '*.swift')
+$(BUNDLE_NAME)_FILES = $(shell find Sources/$(BUNDLE_NAME) -name '*.swift')
 $(BUNDLE_NAME)_INSTALL_PATH = /Library/PreferenceBundles
 $(BUNDLE_NAME)_CFLAGS = -fobjc-arc
 $(BUNDLE_NAME)_FRAMEWORKS = Preferences

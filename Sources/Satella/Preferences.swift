@@ -3,18 +3,18 @@ import Cephei
 class Preferences {
 	static let shared = Preferences() // shared instance so we can check these values from the satella class
 	
-	private let preferences = HBPreferences(identifier: "emt.paisseon.satella")
-	private(set) var enabled: ObjCBool = true
-	private(set) var receipts: ObjCBool = false
-	private(set) var observer: ObjCBool = true
+	private let preferences                    = HBPreferences(identifier: "emt.paisseon.satella")
+	private(set) var enabled: ObjCBool         = true
+	private(set) var receipts: ObjCBool        = false
+	private(set) var observer: ObjCBool        = true
 	private(set) var globalInjection: ObjCBool = false
 	
 	private init() { // various cephei stuff
 		preferences.register(defaults: [
-			"enabled": true,
-			"receipts": false,
-			"observer": true,
-			"globalInjection": false,
+			"enabled"         : true,
+			"receipts"        : false,
+			"observer"        : true,
+			"globalInjection" : false,
 		])
 	
 		preferences.register(_Bool: &enabled, default: true, forKey: "enabled")
