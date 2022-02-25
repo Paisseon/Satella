@@ -23,7 +23,7 @@ class Preferences {
 		preferences.register(_Bool: &globalInjection, default: false, forKey: "globalInjection")
 	}
 	
-	func shouldInit() -> Bool {
+	public func shouldInit() -> Bool {
 		let altList = NSDictionary(contentsOfFile: "/var/mobile/Library/Preferences/emt.paisseon.satella.plist") as Dictionary? // get all enabled apps
 		
 		if !enabled.boolValue {

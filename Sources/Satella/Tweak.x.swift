@@ -4,16 +4,16 @@ import StoreKit
 import Cephei
 
 // groups to enable/disable features on init (see class Satella) instead of requiring a conditional every time
-struct Main: HookGroup {}
-struct Receipt: HookGroup {}
-struct Observer: HookGroup {}
+struct Main     : HookGroup {}
+struct Receipt  : HookGroup {}
+struct Observer : HookGroup {}
 
 class TransactionHook: ClassHook<SKPaymentTransaction> {
 	typealias Group = Main
 
 	func transactionState() -> SKPaymentTransactionState {
 		if target.original != nil { // if the purchase is legitimate
-			return .restored // keep it as a restored purchase
+			return .restored        // keep it as a restored purchase
 		}
 		
 		return .purchased // otherwise make it purchased
@@ -49,33 +49,42 @@ class TransactionHook: ClassHook<SKPaymentTransaction> {
 	func _setTransactionIdentifier(_ arg0: String) {
 		orig._setTransactionIdentifier("satella-_tId-\(Int.random(in: 1..<999999))")
 	}
+	
+	func transactionDate() -> NSDate {
+		NSDate()
+	}
+	
+	func _setTransactionDate(_ arg0: NSDate) {
+		orig._setTransactionDate(NSDate())
+	}
 }
 
 class ReceiptHook: ClassHook<SKPaymentTransaction> {
 	typealias Group = Receipt
 	
 	func transactionReceipt() -> Data? {
-		/* you probably don't want to read the very very long, nonsensical strings that are used here 
-		so i'll explain what this function does. the first stanza gets some information: the current time,
-		the app version, a random number for the receipt id, the uuid, and the app bundle id.
-		
-		next, all of these are inserted into a template of the receipt's purchase_info section, along with
-		some other arbitrary values such as the purchase date, etc.
-		
-		due to the structure of the receipt, we then have to convert this into base64 which is done by casting
-		the string as data, then back to a string. after that we put the base64 into a receipt with a valid
-		signature, which is just meaningless data. then we cast this string as data and submit it to apple
+		/* 
+			you probably don't want to read the very very long, nonsensical strings that are used here 
+			so i'll explain what this function does. the first stanza gets some information: the current time,
+			the app version, a random number for the receipt id, the uuid, and the app bundle id.
+			
+			next, all of these are inserted into a template of the receipt's purchase_info section, along with
+			some other arbitrary values such as the purchase date, etc.
+			
+			due to the structure of the receipt, we then have to convert this into base64 which is done by casting
+			the string as data, then back to a string. after that we put the base64 into a receipt with a valid
+			signature, which is just meaningless data. then we cast this string as data and submit it to apple
 		*/
 	
-		let now       = Int64(Date().timeIntervalSince1970) * 1000 // get time since epoch in ms
+		let now       = Int64(Date().timeIntervalSince1970) * 1000                                        // get time since epoch in ms
 		let bvrs      = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String // get the app version
-		let receiptId = Int.random(in: 1..<999999) // generate random number
-		let vendorId  = UIDevice.current.identifierForVendor?.uuidString // get app uuid
-		let bundleId  = Bundle.main.bundleIdentifier // get app bundle id
-		let uniqueId  = Int.random(in: 1..<999999) // generate random number
+		let receiptId = Int.random(in: 1..<999999)                                                        // generate random number
+		let vendorId  = UIDevice.current.identifierForVendor?.uuidString                                  // get app uuid
+		let bundleId  = Bundle.main.bundleIdentifier                                                      // get app bundle id
+		let uniqueId  = Int.random(in: 1..<999999)                                                        // generate random number
 		
 		// template receipt with various stuff
-		let purchaseInfo = "{\n\t\"original-purchase-date-pst\" = \"2022-02-05 00:00:00 America/Los_Angeles\";\n\t\"purchase-date-ms\" = \"\(now)\";\n\t\"unique-identifier\" = \"satella-uid-\(uniqueId)\";\n\t\"original-transaction-id\" = \"satella-tId-\(receiptId)\";\n\t\"bvrs\" = \"\(String(describing: bvrs))\";\n\t\"app-item-id\" = \"\(receiptId)\";\n\t\"transaction-id\" = \"\(receiptId)\";\n\t\"quantity\" = \"1\";\n\t\"original-purchase-date-ms\" = \"\(now)\";\n\t\"unique-vendor-identifier\" = \"\(String(describing: vendorId))\";\n\t\"item-id\" = \"\(receiptId)\";\n\t\"version-external-identifier\" = \"07151129\";\n\t\"product-id\" = \"\(String(describing: bundleId)).satella\";\n\t\"purchase-date\" = \"2022-02-05 07:00:00 Etc/GMT\";\n\t\"original-purchase-date\" = \"2022-02-05 07:00:00 Etc/GMT\";\n\t\"bid\" = \"\(String(describing: bundleId))\";\n\t\"purchase-date-pst\" = \"2022-02-05 00:00:00 America/Los_Angeles\";\n}"
+		let purchaseInfo = "{\n\t\"original-purchase-date-pst\" = \"2022-02-05 00:00:00 America/Los_Angeles\";\n\t\"purchase-date-ms\" = \"\(now)\";\n\t\"unique-identifier\" = \"satella-uid-\(uniqueId)\";\n\t\"original-transaction-id\" = \"satella-tId-\(receiptId)\";\n\t\"bvrs\" = \"\(String(describing: bvrs))\";\n\t\"app-item-id\" = \"\(receiptId)\";\n\t\"transaction-id\" = \"\(receiptId)\";\n\t\"quantity\" = \"1\";\n\t\"original-purchase-date-ms\" = \"\(now)\";\n\t\"unique-vendor-identifier\" = \"\(String(describing: vendorId))\";\n\t\"item-id\" = \"\(receiptId)\";\n\t\"version-external-identifier\" = \"07151129\";\n\t\"product-id\" = \"\(String(describing: target.payment.productIdentifier))\";\n\t\"purchase-date\" = \"2022-02-05 07:00:00 Etc/GMT\";\n\t\"original-purchase-date\" = \"2022-02-05 07:00:00 Etc/GMT\";\n\t\"bid\" = \"\(String(describing: bundleId))\";\n\t\"purchase-date-pst\" = \"2022-02-05 00:00:00 America/Los_Angeles\";\n}"
 		
 		let purchaseData         = purchaseInfo.data(using: .utf8) // convert to data
 		var purchaseB64: String? = nil
@@ -92,7 +101,7 @@ class ReceiptHook: ClassHook<SKPaymentTransaction> {
 		} // convert base64 into data for the final receipt
 		
 		// if let receiptPath = Bundle.main.appStoreReceiptURL?.path {
-		// 	NSData(data: finalReceipt).write(toFile: receiptPath, atomically: true)
+		// NSData(data: finalReceipt).write(toFile: receiptPath, atomically: true)
 		// }
 		
 		return finalReceipt
@@ -124,8 +133,9 @@ class ObserverHook: ClassHook<SKPaymentQueue> {
 	
 	func addTransactionObserver(_ arg0: SKPaymentTransactionObserver) {
 		let tellaObserver      = SatellaObserver.shared // get a shared instance of our observer
-		tellaObserver.observer = arg0 // set the shared instance's observer ivar to the app's observer
-		orig.addTransactionObserver(tellaObserver) // replace the app's observer with our hacked one
+		tellaObserver.observer = arg0                   // set the shared instance's observer ivar to the app's observer
+		
+		orig.addTransactionObserver(tellaObserver)      // replace the app's observer with our hacked one
 	}
 }
 
