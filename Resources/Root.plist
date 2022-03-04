@@ -4,9 +4,9 @@
 	<dict>
 		<key>items</key>
 		<array>
-		
+			
 			<!-- header -->
-		
+			
 			<dict>
 				<key>cell</key>
 				<string>PSGroupCell</string>
@@ -22,7 +22,6 @@
 				<string>emt.paisseon.satella</string>
 			</dict>
 			
-		
 			<!-- basic feature toggles -->
 			
 			<dict>
@@ -51,7 +50,7 @@
 				<key>cell</key>
 				<string>PSSwitchCell</string>
 				<key>default</key>
-				<false/>
+				<true/>
 				<key>defaults</key>
 				<string>emt.paisseon.satella</string>
 				<key>key</key>
@@ -72,6 +71,20 @@
 				<string>observer</string>
 				<key>label</key>
 				<string>Observer</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.satella.prefschanged</string>
+				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<true/>
+				<key>defaults</key>
+				<string>emt.paisseon.satella</string>
+				<key>key</key>
+				<string>sideloaded</string>
+				<key>label</key>
+				<string>Sideloaded Apps</string>
 			</dict>
 			
 			<!-- injection control -->

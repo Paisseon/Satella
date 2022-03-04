@@ -1,5 +1,5 @@
 SYSROOT = $(THEOS)/sdks/iPhoneOS14.4.sdk/
-ARCHS = arm64
+ARCHS = arm64 arm64e
 PREFIX = $(THEOS)/toolchain/Xcode11.xctoolchain/usr/bin/
 TARGET = iphone:clang:latest:12.2
 
@@ -14,8 +14,6 @@ $(TWEAK_NAME)_FILES = $(shell find Sources/$(TWEAK_NAME) -name '*.swift') $(shel
 $(TWEAK_NAME)_SWIFTFLAGS = -ISources/$(TWEAK_NAME)C/include
 $(TWEAK_NAME)_CFLAGS = -fobjc-arc -ISources/$(TWEAK_NAME)C/include
 $(TWEAK_NAME)_EXTRA_FRAMEWORKS = Cephei
-
-ARCHS = arm64 arm64e
 
 BUNDLE_NAME = SatellaPrefs
 $(BUNDLE_NAME)_FILES = $(shell find Sources/$(BUNDLE_NAME) -name '*.swift')
