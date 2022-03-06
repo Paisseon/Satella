@@ -22,7 +22,7 @@ class SatellaDelegate: NSObject, SKProductsRequestDelegate {
 		
 		for identifier in productIdentifiers {                      // create an abstraction for each real product
 			let product = SKProduct()
-			product._setPrice(0 as? NSDecimalNumber)
+			product._setPrice(0)
 			product._setProductIdentifier(identifier)
 			product._setLocalizedTitle(identifier)
 			
