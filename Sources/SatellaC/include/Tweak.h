@@ -7,7 +7,9 @@
 
 @interface SKProduct (Satella)
 - (void) _setPrice: (NSDecimalNumber *) arg0;
+- (void) _setPriceLocale: (NSLocale *) arg0;
 - (void) _setProductIdentifier: (NSString *) arg0;
+- (void) _setLocalizedDescription: (NSString *) arg0;
 - (void) _setLocalizedTitle: (NSString *) arg0;
 @end
 
@@ -18,5 +20,9 @@
 NSArray<NSString *> *productIdentifiers(SKProductsRequest *arg0) {
 	id internalRequest        = [arg0 valueForKey: @"_productsRequestInternal"];
 	NSSet *productIdentifiers = [internalRequest valueForKey: @"_productIdentifiers"];
-	return [productIdentifiers allObjects];
+	if (productIdentifiers) {
+		return [productIdentifiers allObjects];
+	} else {
+		return @[@"emt.paisseon.satella.cypwn"];
+	}
 }

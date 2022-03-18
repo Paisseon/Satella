@@ -23,7 +23,9 @@ class SatellaDelegate: NSObject, SKProductsRequestDelegate {
 		for identifier in productIdentifiers {                      // create an abstraction for each real product
 			let product = SKProduct()
 			product._setPrice(0)
+			product._setPriceLocale(NSLocale.autoupdatingCurrent)
 			product._setProductIdentifier(identifier)
+			product._setLocalizedDescription(identifier)
 			product._setLocalizedTitle(identifier)
 			
 			products.append(product)                                // add to our hacked product list

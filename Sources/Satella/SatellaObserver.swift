@@ -17,19 +17,19 @@ class SatellaObserver: NSObject, SKPaymentTransactionObserver {
 			
 			switch transaction.transactionState {                                // check each possible state 
 				case .purchased:
-					purchases.append(transaction)                                // if the transaction is already marked as purchased, add it to 																the list of purchases
+					purchases.append(transaction)                                // if the transaction is already marked as purchased, add it to 																					the list of purchases
 					queue.finishTransaction(transaction)                         // tell the queue to finish processing this transaction
 				case .restored:
 					if let origTrans = transaction.original {                    // get the original transaction
 						purchases.append(origTrans)                              // add it to the list of purchases
 						queue.finishTransaction(transaction)                     // mark transaction as having completed
-					} else {                                                     // if we can't find the original transaction for whatever reason, 																just use the default response
+					} else {                                                     // if we can't find the original transaction for whatever reason, 																					just use the default response
 						transaction._setTransactionState(.purchased)             // set the code as purchased
 						transaction._setError(nil)                               // set the error as nil
 						purchases.append(transaction)                            // add to the list
 						queue.finishTransaction(transaction)                     // mark transaction as having completed
 					}
-				default:                                                         // handles all other states with the same code as the else-block 																	in .restored
+				default:                                                         // handles all other states with the same code as the else-block 																						in .restored
 					transaction._setTransactionState(.purchased)
 					transaction._setError(nil)
 					purchases.append(transaction)
