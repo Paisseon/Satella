@@ -1,6 +1,5 @@
 SYSROOT = $(THEOS)/sdks/iPhoneOS14.4.sdk/
 ARCHS = arm64 arm64e
-PREFIX = $(THEOS)/toolchain/Xcode11.xctoolchain/usr/bin/
 TARGET = iphone:clang:latest:12.2
 
 FINALPACKAGE = 1

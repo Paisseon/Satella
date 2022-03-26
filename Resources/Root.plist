@@ -93,7 +93,7 @@
 				<key>cell</key>
 				<string>PSGroupCell</string>
 				<key>label</key>
-				<string>Injection</string>
+				<string>Injection Control</string>
 			</dict>
 			<dict>
 				<key>PostNotification</key>
