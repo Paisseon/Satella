@@ -21,9 +21,10 @@ class SatellaDelegate: NSObject, SKProductsRequestDelegate {
 		}
 		
 		for identifier in productIdentifiers {                      // create an abstraction for each real product
+			let locale  = Locale.autoupdatingCurrent ?? Locale(identifier: "da_DK")
 			let product = SKProduct()
 			product._setPrice(0)
-			product._setPriceLocale(NSLocale.autoupdatingCurrent)
+			product._setPriceLocale(locale)
 			product._setProductIdentifier(identifier)
 			product._setLocalizedDescription(identifier)
 			product._setLocalizedTitle(identifier)

@@ -28,6 +28,10 @@ class RootListController: HBRootListController {
 	}
 	
 	@objc func respring() {
-		HBRespringController.respringAndReturn(to: URL(string: "prefs:root=Satella"))
+		if FileManager.default.fileExists(atPath: "/Library/MobileSubstrate/DynamicLibraries/shuffle.dylib") {
+			HBRespringController.respringAndReturn(to: URL(string: "prefs:root=Tweaks&path=Satella"))
+		} else {
+			HBRespringController.respringAndReturn(to: URL(string: "prefs:root=Satella"))
+		}
 	}
 }
