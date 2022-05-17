@@ -1,12 +1,13 @@
+import Cephei
 import Orion
 import SatellaC
 import StoreKit
-import Cephei
 
 struct Main     : HookGroup {}
 struct Receipt  : HookGroup {}
 struct Observer : HookGroup {}
 struct Sideload : HookGroup {}
+struct RevCat   : HookGroup {}
 
 class TransactionHook: ClassHook<SKPaymentTransaction> {
 	typealias Group = Main
@@ -119,6 +120,43 @@ class VerifyHook: ClassHook<NSURL> {
 	}
 }
 
+class EntitlementHook: ClassHook<NSObject> {
+    typealias Group       = RevCat
+    static let targetName = "RCEntitlementInfo"
+    
+    func isActive() -> Bool {
+        target.setIsActive(true)
+        target.setWillRenew(true)
+        target.setExpirationDate(nil)
+        target.setLatestPurchaseDate(Date())
+        target.setOriginalPurchaseDate(Date())
+        target.setIsSandbox(false)
+        
+        return true
+    }
+}
+
+class EntitlementsHook: ClassHook<NSObject> {
+    typealias Group       = RevCat
+    static let targetName = "RCEntitlementInfos"
+    
+    func all() -> NSDictionary {
+        let info = blank_entitlement() as Any
+        
+        return [
+            "annual"              : info,
+            "lifetime"            : info,
+            "monthly"             : info,
+            "premium"             : info,
+            "PremiumAnnualWidget" : info,
+            "pro"                 : info,
+            "subscriber"          : info,
+            "subscription"        : info,
+            "vip"                 : info
+        ] as NSDictionary
+    }
+}
+
 class Satella: Tweak {
 	required init() {
 		if Preferences.shared.shouldInit() {
@@ -135,6 +173,10 @@ class Satella: Tweak {
 			if Preferences.shared.sideloaded.boolValue == true {
 				Sideload().activate()
 			}
+            
+            if Preferences.shared.revcat.boolValue == true && objc_getClass("RCEntitlementInfo") != nil {
+                RevCat().activate()
+            }
 		}
 	}
 }

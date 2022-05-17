@@ -9,6 +9,7 @@ class Preferences {
 	private(set) var observer       : ObjCBool = true
 	private(set) var sideloaded     : ObjCBool = false
 	private(set) var globalInjection: ObjCBool = false
+    private(set) var revcat         : ObjCBool = false
 	
 	private init() {
 		preferences.register(defaults: [
@@ -17,6 +18,7 @@ class Preferences {
 			"observer"        : true,
 			"sideloaded"      : true,
 			"globalInjection" : false,
+            "revcat"          : false,
 		])
 	
 		preferences.register(_Bool: &enabled, default: true, forKey: "enabled")
@@ -24,6 +26,7 @@ class Preferences {
 		preferences.register(_Bool: &observer, default: true, forKey: "observer")
 		preferences.register(_Bool: &sideloaded, default: true, forKey: "sideloaded")
 		preferences.register(_Bool: &globalInjection, default: false, forKey: "globalInjection")
+        preferences.register(_Bool: &revcat, default: false, forKey: "revcat")
 	}
 	
 	public func shouldInit() -> Bool {
