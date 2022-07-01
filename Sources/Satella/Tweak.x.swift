@@ -3,50 +3,44 @@ import Orion
 import SatellaC
 import StoreKit
 
-struct Main     : HookGroup {}
+struct Core     : HookGroup {}
 struct Receipt  : HookGroup {}
 struct Observer : HookGroup {}
 struct Sideload : HookGroup {}
-struct RevCat   : HookGroup {}
 
 class TransactionHook: ClassHook<SKPaymentTransaction> {
-	typealias Group = Main
+	typealias Group = Core
+    
+    // Make transaction state as purchased or restored (success values)
 
 	func transactionState() -> SKPaymentTransactionState {
-		if target.original != nil {
-			return .restored
-		}
-		
-		return .purchased
-	}
-	
-	func _setTransactionState(_ arg0: SKPaymentTransactionState) {
-		if arg0 == .restored {
-			orig._setTransactionState(arg0)
-			return
-		}
-		
-		orig._setTransactionState(.purchased)
-	}
+        return target.original != nil ? .restored : .purchased
+    }
+    
+    func _setTransactionState(_ arg0: SKPaymentTransactionState) {
+        arg0 == .restored ? orig._setTransactionState(.restored) : orig._setTransactionState(.purchased)
+    }
+    
+    // Below just fixes crashes
 	
 	func _setError(_ arg0: NSError?) {
 		orig._setError(nil)
 	}
 	
 	func matchingIdentifier() -> String {
-		"satella-mId-\(Int.random(in: 1..<999999))"
+		"satella-mId-\(Int.random(in: 1...999999))"
 	}
 	
 	func transactionIdentifier() -> String {
-		"satella-tId-\(Int.random(in: 1..<999999))"
+		"satella-tId-\(Int.random(in: 1...999999))"
 	}
 	
 	func _transactionIdentifier() -> String {
-		"satella-_tId-\(Int.random(in: 1..<999999))"
+		"satella-_tId-\(Int.random(in: 1...999999))"
 	}
 	
 	func _setTransactionIdentifier(_ arg0: String) {
-		orig._setTransactionIdentifier("satella-_tId-\(Int.random(in: 1..<999999))")
+		orig._setTransactionIdentifier("satella-_tId-\(Int.random(in: 1...999999))")
 	}
 	
 	func transactionDate() -> NSDate {
@@ -58,13 +52,27 @@ class TransactionHook: ClassHook<SKPaymentTransaction> {
 	}
 }
 
+// Allow purchase without a payment method
+
 class QueueHook: ClassHook<SKPaymentQueue> {
-	typealias Group = Main
+	typealias Group = Core
 	
 	class func canMakePayments() -> Bool {
 		true
 	}
 }
+
+// Make the price mark as 0,00 to alleviate confusion
+
+class ProductHook: ClassHook<SKProduct> {
+    typealias Group = Core
+    
+    func price() -> NSDecimalNumber {
+        return 0
+    }
+}
+
+// Prevent receipt refreshes from breaking purchases
 
 class RefreshHook: ClassHook<SKReceiptRefreshRequest> {
 	typealias Group = Receipt
@@ -78,6 +86,8 @@ class RefreshHook: ClassHook<SKReceiptRefreshRequest> {
 	}
 }
 
+// Refer to SatellaObserver.swift
+
 class ObserverHook: ClassHook<SKPaymentQueue> {
 	typealias Group = Observer
 	
@@ -88,6 +98,8 @@ class ObserverHook: ClassHook<SKPaymentQueue> {
 		orig.addTransactionObserver(tellaObserver)
 	}
 }
+
+// Refer to SatellaDelegate.swift
 
 class RequestHook: ClassHook<SKProductsRequest> {
 	typealias Group = Sideload
@@ -100,83 +112,40 @@ class RequestHook: ClassHook<SKProductsRequest> {
 	}
 }
 
+// Redirect Apple's IAP verification to our server, which always returns "valid." Only works if the app does both:
+// a) Uses /verifyReceipt on client device instead of on their server
+// b) Doesn't also use local validation (can sometimes be mitigated using Receipts)
+
 class VerifyHook: ClassHook<NSURL> {
-	typealias Group = Main
+	typealias Group = Receipt
 	
 	func initWithString(_ arg0: String) -> NSURL {
-		if arg0.contains("itunes.apple.com/verifyReceipt") {
-			return orig.initWithString("https://drm.cypwn.xyz/verifyReceipt")
-		}
-		
-		return orig.initWithString(arg0)
+		return orig.initWithString(arg0.contains("apple.com/verifyReceipt") ? "https://drm.cypwn.xyz/verifyReceipt.php" : arg0)
 	}
 	
 	class func URLWithString(_ arg0: String) -> NSURL {
-		if arg0.contains("itunes.apple.com/verifyReceipt") {
-			return orig.URLWithString("https://drm.cypwn.xyz/verifyReceipt")
-		}
-		
-		return orig.URLWithString(arg0)
+		return orig.URLWithString(arg0.contains("apple.com/verifyReceipt") ? "http://drm.cypwn.xyz/verifyReceipt.php" : arg0)
 	}
 }
 
-class EntitlementHook: ClassHook<NSObject> {
-    typealias Group       = RevCat
-    static let targetName = "RCEntitlementInfo"
-    
-    func isActive() -> Bool {
-        target.setIsActive(true)
-        target.setWillRenew(true)
-        target.setExpirationDate(nil)
-        target.setLatestPurchaseDate(Date())
-        target.setOriginalPurchaseDate(Date())
-        target.setIsSandbox(false)
-        
-        return true
-    }
-}
-
-class EntitlementsHook: ClassHook<NSObject> {
-    typealias Group       = RevCat
-    static let targetName = "RCEntitlementInfos"
-    
-    func all() -> NSDictionary {
-        let info = blank_entitlement() as Any
-        
-        return [
-            "annual"              : info,
-            "lifetime"            : info,
-            "monthly"             : info,
-            "premium"             : info,
-            "PremiumAnnualWidget" : info,
-            "pro"                 : info,
-            "subscriber"          : info,
-            "subscription"        : info,
-            "vip"                 : info
-        ] as NSDictionary
-    }
-}
+// Constructor
 
 class Satella: Tweak {
 	required init() {
 		if Preferences.shared.shouldInit() {
-			Main().activate()
+			Core().activate()
 			
-			if Preferences.shared.receipts.boolValue == true {
-				Receipt().activate() // this is located in ReceiptHook.swift because it was large and ugly
+			if Preferences.shared.receipts {
+				Receipt().activate()
 			}
 			
-			if Preferences.shared.observer.boolValue == true {
+			if Preferences.shared.observer {
 				Observer().activate()
 			}
 			
-			if Preferences.shared.sideloaded.boolValue == true {
+			if Preferences.shared.sideloaded {
 				Sideload().activate()
 			}
-            
-            if Preferences.shared.revcat.boolValue == true && objc_getClass("RCEntitlementInfo") != nil {
-                RevCat().activate()
-            }
 		}
 	}
 }
