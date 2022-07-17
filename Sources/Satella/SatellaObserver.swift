@@ -4,47 +4,30 @@ import StoreKit
 class SatellaObserver: NSObject, SKPaymentTransactionObserver {
 	static let shared = SatellaObserver()
 	
-	public var observer: SKPaymentTransactionObserver? = nil
-	private var purchases                              = [SKPaymentTransaction]()
+	public var observers  = [SKPaymentTransactionObserver]()
+	private var purchases = [SKPaymentTransaction]()
 	
 	func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-		for transaction in transactions {
-            
-            // Prevent duplicate purchases
-            
-			for purchase in purchases {
+        var current = [SKPaymentTransaction]()
+        
+        // Ensure that there are no duplicate purchases (i.e., purchases occupying the same memory)
+        
+        for transaction in transactions {
+            for purchase in purchases {
 				if purchase === transaction {
 					return
 				}
 			}
-			
-            // Ensure that all purchases are successful, then mark them as finished
             
-			switch transaction.transactionState {
-				case .purchased:
-					purchases.append(transaction)
-					queue.finishTransaction(transaction)
-				case .restored:
-					if let origTrans = transaction.original {
-						purchases.append(origTrans)
-						queue.finishTransaction(transaction)
-					} else {
-						transaction._setTransactionState(.purchased)
-						transaction._setError(nil)
-						purchases.append(transaction)
-						queue.finishTransaction(transaction)
-					}
-				default:
-					transaction._setTransactionState(.purchased)
-					transaction._setError(nil)
-					purchases.append(transaction)
-					queue.finishTransaction(transaction)
-			}
+            purchases.append(transaction)
+            current.append(transaction)
 		}
 		
         // Send the hacked list of purchases to the original payment queue for the app to process
         
-		observer?.paymentQueue(queue, updatedTransactions: purchases)
+        for observer in observers {
+            observer.paymentQueue(queue, updatedTransactions: current)
+        }
 	}
 	
 	private override init() {

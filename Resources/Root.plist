@@ -50,7 +50,7 @@
 				<key>cell</key>
 				<string>PSSwitchCell</string>
 				<key>default</key>
-				<true/>
+				<false/>
 				<key>defaults</key>
 				<string>emt.paisseon.satella</string>
 				<key>key</key>
@@ -64,7 +64,7 @@
 				<key>cell</key>
 				<string>PSSwitchCell</string>
 				<key>default</key>
-				<true/>
+				<false/>
 				<key>defaults</key>
 				<string>emt.paisseon.satella</string>
 				<key>key</key>
@@ -78,7 +78,7 @@
 				<key>cell</key>
 				<string>PSSwitchCell</string>
 				<key>default</key>
-				<true/>
+				<false/>
 				<key>defaults</key>
 				<string>emt.paisseon.satella</string>
 				<key>key</key>
@@ -86,20 +86,6 @@
 				<key>label</key>
 				<string>Sideloaded Apps</string>
 			</dict>
-            <dict>
-                <key>PostNotification</key>
-                <string>emt.paisseon.satella.prefschanged</string>
-                <key>cell</key>
-                <string>PSSwitchCell</string>
-                <key>default</key>
-                <false/>
-                <key>defaults</key>
-                <string>emt.paisseon.satella</string>
-                <key>key</key>
-                <string>revcat</string>
-                <key>label</key>
-                <string>RevenueCat</string>
-            </dict>
 			
 			<!-- injection control -->
 			

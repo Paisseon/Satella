@@ -52,6 +52,16 @@ class TransactionHook: ClassHook<SKPaymentTransaction> {
 	}
 }
 
+// Disable sandbox maybe???
+
+class PaymentHook: ClassHook<SKPayment> {
+    typealias Group = Core
+    
+    func simulatesAskToBuyInSandbox() -> Bool {
+        false
+    }
+}
+
 // Allow purchase without a payment method
 
 class QueueHook: ClassHook<SKPaymentQueue> {
@@ -68,7 +78,7 @@ class ProductHook: ClassHook<SKProduct> {
     typealias Group = Core
     
     func price() -> NSDecimalNumber {
-        return 0
+        0.01
     }
 }
 
@@ -92,8 +102,8 @@ class ObserverHook: ClassHook<SKPaymentQueue> {
 	typealias Group = Observer
 	
 	func addTransactionObserver(_ arg0: SKPaymentTransactionObserver) {
-		let tellaObserver      = SatellaObserver.shared
-		tellaObserver.observer = arg0
+		let tellaObserver = SatellaObserver.shared
+		tellaObserver.observers.append(arg0)
 		
 		orig.addTransactionObserver(tellaObserver)
 	}
