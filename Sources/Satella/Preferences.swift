@@ -1,6 +1,6 @@
 import Cephei
 
-class Preferences {
+final class Preferences {
 	static let shared = Preferences()
 	
 	private let preferences                = HBPreferences(identifier: "emt.paisseon.satella")

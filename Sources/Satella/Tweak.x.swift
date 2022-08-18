@@ -72,13 +72,13 @@ class QueueHook: ClassHook<SKPaymentQueue> {
 	}
 }
 
-// Make the price mark as 0,00 to alleviate confusion
+// Make the price mark as 0,00 to mark successful injection
 
 class ProductHook: ClassHook<SKProduct> {
     typealias Group = Core
     
     func price() -> NSDecimalNumber {
-        0.01
+        0.0
     }
 }
 
@@ -115,8 +115,8 @@ class RequestHook: ClassHook<SKProductsRequest> {
 	typealias Group = Sideload
 	
 	func setDelegate(_ arg0: SKProductsRequestDelegate) {
-		let tellaDelegate      = SatellaDelegate.shared
-		tellaDelegate.delegate = arg0
+		let tellaDelegate = SatellaDelegate.shared
+		tellaDelegate.delegates.append(arg0)
 		
 		orig.setDelegate(tellaDelegate)
 	}
@@ -124,7 +124,7 @@ class RequestHook: ClassHook<SKProductsRequest> {
 
 // Redirect Apple's IAP verification to our server, which always returns "valid." Only works if the app does both:
 // a) Uses /verifyReceipt on client device instead of on their server
-// b) Doesn't also use local validation (can sometimes be mitigated using Receipts)
+// b) Doesn't also use local validation (can sometimes be mitigated using Receipts, esp. on iOS 13)
 
 class VerifyHook: ClassHook<NSURL> {
 	typealias Group = Receipt

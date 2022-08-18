@@ -2,17 +2,20 @@ import SatellaC
 import StoreKit
 
 class SatellaDelegate: NSObject, SKProductsRequestDelegate {
-	static let shared = SatellaDelegate()
+	static let shared    = SatellaDelegate()
 	
-	public var delegate: SKProductsRequestDelegate? = nil
-	private var products                            = [SKProduct]()
+	public var delegates = [SKProductsRequestDelegate]()
+	private var products = [SKProduct]()
 	
 	func productsRequest(_ arg0: SKProductsRequest, didReceive arg1: SKProductsResponse) {
         
         // If the products is not empty, that means the app is not sideloaded so we should just let iOS handle it normally
         
 		if arg1.products.count > 0 {
-			delegate?.productsRequest(arg0, didReceive: arg1)
+            for delegate in delegates {
+                delegate.productsRequest(arg0, didReceive: arg1)
+            }
+            
 			return
 		}
 		
@@ -43,7 +46,10 @@ class SatellaDelegate: NSObject, SKProductsRequestDelegate {
         // Send the list of product abstractions to the app
 		
 		response._setProducts(products)
-		delegate?.productsRequest(arg0, didReceive: response)
+        
+        for delegate in delegates {
+            delegate.productsRequest(arg0, didReceive: response)
+        }
 	}
 	
 	private override init() {

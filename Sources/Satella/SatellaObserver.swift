@@ -2,7 +2,7 @@ import SatellaC
 import StoreKit
 
 class SatellaObserver: NSObject, SKPaymentTransactionObserver {
-	static let shared = SatellaObserver()
+	static let shared     = SatellaObserver()
 	
 	public var observers  = [SKPaymentTransactionObserver]()
 	private var purchases = [SKPaymentTransaction]()
