@@ -10,11 +10,6 @@ struct Tweak {
             return
         }
         
-        // NSURL
-        
-        InitWithString().hook()
-        URLWithString().hook()
-        
         // SKPaymentQueue
         
         AddTransactionObserver().hook(onlyIf: prefs.isObserver)
@@ -40,6 +35,10 @@ struct Tweak {
         } else {
             SetDelegate12().hook(onlyIf: prefs.isSideload)
         }
+        
+        // URLSession
+        
+        DataTask().hook(onlyIf: prefs.isReceipt)
         
         // Functions
         

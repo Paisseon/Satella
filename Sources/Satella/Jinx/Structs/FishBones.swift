@@ -25,6 +25,7 @@ struct FishBones {
                     to: mach_header_64.self,
                     capacity: 1
                 ) { $0 }
+                
                 let slide: Int = _dyld_get_image_vmaddr_slide(i)
                 
                 let ret: Bool = hookImage(

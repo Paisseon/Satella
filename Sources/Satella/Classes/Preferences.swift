@@ -39,22 +39,12 @@ final class Preferences {
             return false
         }
         
-        if _isGlobal.boolValue {
-            return true
+        if !_isGlobal.boolValue {
+            let altList = NSDictionary(contentsOfFile: "/var/mobile/Library/Preferences/emt.paisseon.satella.plist") as Dictionary?
+            return (altList?["apps" as NSString]?.contains(Bundle.main.bundleIdentifier as Any) == true)
         }
         
-        // Check AltList array for the bundle ID of the current app
-
-        do {
-            let dict: [String: Any?]? = try NSDictionary(
-                contentsOf: URL(string: "file:///var/mobile/Library/Preferences/emt.paisseon.satella.plist")!,
-                error: ()
-            ) as? [String: Any?]? ?? [:]
-
-            return (dict?["apps"] as? [String])?.contains(Bundle.main.bundleIdentifier!) == true
-        } catch {
-            return false
-        }
+        return true
     }
 
     // MARK: Internal

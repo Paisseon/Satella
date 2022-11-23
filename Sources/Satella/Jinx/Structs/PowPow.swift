@@ -1,4 +1,4 @@
-import Foundation.NSObjCRuntime
+import Foundation
 import MachO
 
 // MARK: - PowPow
@@ -46,10 +46,10 @@ struct PowPow {
     }()
 
     @discardableResult
-    static func hook<T>(
+    static func hook(
         _ class: AnyClass,
         _ selector: Selector,
-        _ replacement: T,
+        _ replacement: some Any,
         _ key: AnyType
     ) -> Bool {
         switch native {
@@ -126,7 +126,7 @@ struct PowPow {
     }
 
     // MARK: Private
-    
+
     private static func hookFuncInternal(
         _ function: String,
         _ image: String?,
@@ -158,15 +158,15 @@ struct PowPow {
         
         guard
             let MSFindSymbol: MF = getHookingSymbol(
-                "/usr/lib/libsubstitute.dylib",
+                "/usr/lib/libsubstrate.dylib",
                 "MSFindSymbol"
             ),
             let MSGetImageByName: MG = getHookingSymbol(
-                "/usr/lib/libsubstitute.dylib",
+                "/usr/lib/libsubstrate.dylib",
                 "MSGetImageByName"
             ),
             let MSHookFunction: MH = getHookingSymbol(
-                "/usr/lib/libsubstitute.dylib",
+                "/usr/lib/libsubstrate.dylib",
                 "MSHookFunction"
             )
         else {
@@ -180,12 +180,7 @@ struct PowPow {
             return false
         }
         
-        MSHookFunction(
-            symbol,
-            replacement,
-            &tmp
-        )
-        
+        MSHookFunction(symbol, replacement, &tmp)
         voidStack.push(key, tmp)
         
         return true
@@ -216,10 +211,10 @@ struct PowPow {
         }
     }
     
-    private static func hookInternal<T>(
+    private static func hookInternal(
         _ class: AnyClass,
         _ selector: Selector,
-        _ replacement: T,
+        _ replacement: some Any,
         _ key: AnyType
     ) -> Bool {
         guard
@@ -236,28 +231,16 @@ struct PowPow {
             return false
         }
         
-        var tmp: IMP?
-        
-        if class_addMethod(
-            `class`,
-            selector,
-            imp,
-            types
-        ) {
-            tmp = method_getImplementation(orig)
-        } else {
-            tmp = method_setImplementation(orig, imp)
-        }
-        
+        let tmp: IMP = class_addMethod(`class`, selector, imp, types) ? method_getImplementation(orig) : method_setImplementation(orig, imp)
         impStack.push(key, tmp)
         
         return true
     }
     
-    private static func hookLibhooker<T>(
+    private static func hookLibhooker(
         _ class: AnyClass,
         _ selector: Selector,
-        _ replacement: T,
+        _ replacement: some Any,
         _ key: AnyType
     ) -> Bool {
         guard let LBHookMessage: LH = getHookingSymbol(
@@ -290,10 +273,10 @@ struct PowPow {
         return status == 0
     }
     
-    private static func hookSubstitute<T>(
+    private static func hookSubstitute(
         _ class: AnyClass,
         _ selector: Selector,
-        _ replacement: T,
+        _ replacement: some Any,
         _ key: AnyType
     ) -> Bool {
         guard let substitute_hook_objc_message: SH = getHookingSymbol(
@@ -327,10 +310,10 @@ struct PowPow {
         return status == 0
     }
     
-    private static func hookSubstrate<T>(
+    private static func hookSubstrate(
         _ class: AnyClass,
         _ selector: Selector,
-        _ replacement: T,
+        _ replacement: some Any,
         _ key: AnyType
     ) -> Bool {
         guard let MSHookMessageEx: MX = getHookingSymbol(
@@ -346,15 +329,10 @@ struct PowPow {
         ) else {
             return false
         }
+        
         var tmp: IMP?
         
-        MSHookMessageEx(
-            `class`,
-            selector,
-            replacementImp,
-            &tmp
-        )
-        
+        MSHookMessageEx(`class`, selector, replacementImp, &tmp)
         impStack.push(key, tmp)
         
         return true
