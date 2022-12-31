@@ -1,5 +1,5 @@
 SYSROOT = $(THEOS)/sdks/iPhoneOS16.0.sdk/
-ARCHS = arm64 arm64e
+ARCHS = arm64
 TARGET = iphone:clang:latest:12.2
 
 FINALPACKAGE = 1
@@ -9,9 +9,8 @@ FOR_RELEASE = 1
 USING_JINX = 1
 
 LIBRARY_NAME = Satella
-$(LIBRARY_NAME)_FILES = $(shell find Sources/$(LIBRARY_NAME) -name '*.swift') $(shell find Sources/$(LIBRARY_NAME)C -name '*.m' -o -name '*.c' -o -name '*.mm' -o -name '*.cpp')
+$(LIBRARY_NAME)_FILES = Sources/load.s $(shell find Sources/$(LIBRARY_NAME) -name '*.swift')
 $(LIBRARY_NAME)_SWIFTFLAGS = -ISources/$(LIBRARY_NAME)C/include
-$(LIBRARY_NAME)_CFLAGS = -fobjc-arc -ISources/$(LIBRARY_NAME)C/include
 $(LIBRARY_NAME)_EXTRA_FRAMEWORKS = Cephei
 
 BUNDLE_NAME = SatellaPrefs

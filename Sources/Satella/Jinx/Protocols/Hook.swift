@@ -3,7 +3,7 @@ import Foundation
 protocol Hook {
     associatedtype T
     
-    var `class`: AnyClass { get }
+    var `class`: AnyClass? { get }
     var selector: Selector { get }
     var replacement: T { get }
 }
@@ -13,7 +13,7 @@ extension Hook {
     func hook(
         onlyIf condition: Bool = true
     ) -> Bool {
-        if !condition {
+        guard condition, let `class` else {
             return false
         }
         

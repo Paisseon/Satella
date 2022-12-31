@@ -8,14 +8,14 @@ struct SetDelegate: Hook {
         SKProductsRequestDelegate
     ) -> Void
 
-    let `class`: AnyClass = SKProductsRequest.self
+    let `class`: AnyClass? = SKProductsRequest.self
     let selector: Selector = #selector(setter: SKProductsRequest.delegate)
-    let replacement: T = { `self`, cmd, delegate in
+    let replacement: T = { target, cmd, delegate in
         let orig: T = PowPow.unwrap(SetDelegate.self)!
         let tella: SatellaDelegate = .shared
         
         tella.delegates.append(delegate)
-        orig(`self`, cmd, tella)
+        orig(target, cmd, tella)
     }
 }
 

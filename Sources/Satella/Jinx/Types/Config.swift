@@ -1,9 +1,3 @@
-// MARK: - Config
-
 enum Config {
-    case dynamic
-    case jinx
-    case libhooker
-    case substitute
-    case substrate
+    case dynamic, jinx, libhooker, substitute, substrate, xina
 }

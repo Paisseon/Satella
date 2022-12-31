@@ -6,7 +6,7 @@ struct ErrorGetter: Hook {
         Selector
     ) -> Error?
 
-    let `class`: AnyClass = SKPaymentQueue.self
+    let `class`: AnyClass? = SKPaymentQueue.self
     let selector: Selector = #selector(getter: SKPaymentTransaction.error)
     let replacement: T = { _, _ in
         nil

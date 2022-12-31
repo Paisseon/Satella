@@ -6,7 +6,7 @@ struct TransactionDate: Hook {
         Selector
     ) -> Date
 
-    let `class`: AnyClass = SKPaymentTransaction.self
+    let `class`: AnyClass? = SKPaymentTransaction.self
     let selector: Selector = #selector(getter: SKPaymentTransaction.transactionDate)
     let replacement: T = { _, _ in
         Date()

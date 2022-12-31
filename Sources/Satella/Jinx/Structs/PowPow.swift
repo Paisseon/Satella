@@ -20,6 +20,12 @@ struct PowPow {
                 return .substitute
             case .substrate:
                 return .substrate
+            case .xina:
+                return .xina
+        }
+        
+        if access(URL(fileURLWithPath: "/var/jb/usr/lib/libsubstitute.dylib").realURL().path, F_OK) == 0 {
+            return .xina
         }
         
         let hookingLibraries: [(String, Hooker)] = [
@@ -74,7 +80,8 @@ struct PowPow {
                     `class`,
                     selector,
                     replacement,
-                    key
+                    key,
+                    false
                 )
                 
             case .substrate:
@@ -83,6 +90,15 @@ struct PowPow {
                     selector,
                     replacement,
                     key
+                )
+                
+            case .xina:
+                return hookSubstitute(
+                    `class`,
+                    selector,
+                    replacement,
+                    key,
+                    true
                 )
         }
     }
@@ -107,7 +123,8 @@ struct PowPow {
             function,
             image,
             replacement,
-            key
+            key,
+            native == .xina
         )
     }
     
@@ -152,21 +169,23 @@ struct PowPow {
         _ function: String,
         _ image: String?,
         _ replacement: UnsafeMutableRawPointer,
-        _ key: AnyType
+        _ key: AnyType,
+        _ xina: Bool
     ) -> Bool {
         var tmp: UnsafeMutableRawPointer?
+        let dylib: String = xina ?  URL(fileURLWithPath: "/var/jb/usr/lib/libsubstitute.dylib").realURL().path : "/usr/lib/libsubstrate.dylib"
         
         guard
             let MSFindSymbol: MF = getHookingSymbol(
-                "/usr/lib/libsubstrate.dylib",
+                dylib,
                 "MSFindSymbol"
             ),
             let MSGetImageByName: MG = getHookingSymbol(
-                "/usr/lib/libsubstrate.dylib",
+                dylib,
                 "MSGetImageByName"
             ),
             let MSHookFunction: MH = getHookingSymbol(
-                "/usr/lib/libsubstrate.dylib",
+                dylib,
                 "MSHookFunction"
             )
         else {
@@ -277,10 +296,11 @@ struct PowPow {
         _ class: AnyClass,
         _ selector: Selector,
         _ replacement: some Any,
-        _ key: AnyType
+        _ key: AnyType,
+        _ xina: Bool
     ) -> Bool {
         guard let substitute_hook_objc_message: SH = getHookingSymbol(
-            "/usr/lib/libsubstitute.dylib",
+            xina ? URL(fileURLWithPath: "/var/jb/usr/lib/libsubstitute.dylib").realURL().path : "/usr/lib/libsubstitute.dylib",
             "substitute_hook_objc_message"
         ) else {
             return false

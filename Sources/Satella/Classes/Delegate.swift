@@ -1,4 +1,3 @@
-import SatellaJailedC
 import StoreKit
 
 final class SatellaDelegate: NSObject, SKProductsRequestDelegate {
@@ -43,23 +42,23 @@ final class SatellaDelegate: NSObject, SKProductsRequestDelegate {
         var products: [SKProduct] = []
         
         for identifier in identifiers {
-            let locale = Locale(identifier: "da_DK")
-            let product = SKProduct()
+            let locale: Locale = .init(identifier: "da_DK")
+            let product: SKProduct = .init()
+            let price: NSDecimalNumber = 0.01
             
-            product._setPrice(0.00)
-            product._setPriceLocale(locale)
-            product._setProductIdentifier(identifier)
-            product._setLocalizedDescription(identifier)
-            product._setLocalizedTitle("\(identifier)")
+            product.setValue(price, forKey: "price")
+            product.setValue(locale, forKey: "priceLocale")
+            product.setValue(identifier, forKey: "productIdentifier")
+            product.setValue(identifier, forKey: "localizedDescription")
+            product.setValue(identifier, forKey: "localizedTitle")
             
             products.append(product)
         }
         
         // Send an array of fake products to the real delegate, then clear the local array
         
-        let fakeResponse = SKProductsResponse()
-        
-        fakeResponse._setProducts(products)
+        let fakeResponse: SKProductsResponse = .init()
+        fakeResponse.setValue(products, forKey: "products")
         
         for delegate in delegates {
             delegate.productsRequest(request, didReceive: fakeResponse)

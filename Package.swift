@@ -75,13 +75,8 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "SatellaC",
-            cSettings: [.unsafeFlags(cFlags)],
-            cxxSettings: [.unsafeFlags(cxxFlags)]
-        ),
-        .target(
             name: "Satella",
-            dependencies: ["SatellaC"],
+            dependencies: [],
             swiftSettings: [.unsafeFlags(swiftFlags)]
         ),
     ]

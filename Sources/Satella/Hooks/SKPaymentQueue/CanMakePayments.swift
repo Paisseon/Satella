@@ -6,7 +6,7 @@ struct CanMakePayments: Hook {
         Selector
     ) -> Bool
 
-    let `class`: AnyClass = SKPaymentQueue.self
+    let `class`: AnyClass? = SKPaymentQueue.self
     let selector: Selector = #selector(SKPaymentQueue.canMakePayments)
     let replacement: T = { _, _ in
         true

@@ -6,7 +6,7 @@ struct Price: Hook {
         Selector
     ) -> NSDecimalNumber
 
-    let `class`: AnyClass = SKProduct.self
+    let `class`: AnyClass? = SKProduct.self
     let selector: Selector = #selector(getter: SKProduct.price)
     let replacement: T = { _, _ in
         0.00

@@ -1,12 +1,19 @@
-import StoreKit
+import Foundation
 
 struct Tweak {
     static let config: Config = .jinx
     
     static func ctor() {
-        let prefs: Preferences = .shared
+        guard ProcessInfo.processInfo.arguments[0].hasPrefix("/var/containers/Bundle/Application"),
+              Bundle.main.bundleIdentifier?.hasPrefix("com.apple.") != true,
+              let data: Data = try? .init(contentsOf: URL(fileURLWithPath: "/var/mobile/Library/Preferences/emt.paisseon.satella.plist"))
+        else {
+            return
+        }
         
-        if !prefs.shouldInit() {
+        let prefs: Preferences = (try? PropertyListDecoder().decode(Preferences.self, from: data)) ?? .init()
+        
+        guard prefs.shouldInject() else {
             return
         }
         
@@ -19,10 +26,10 @@ struct Tweak {
         
         ErrorGetter().hook()
         MatchingIdentifier().hook()
+        TransactionDate().hook()
         TransactionIdentifier().hook()
         TransactionReceipt().hook(onlyIf: prefs.isReceipt)
         TransactionState().hook()
-        TransactionDate().hook()
         
         // SKProduct
         
@@ -31,9 +38,9 @@ struct Tweak {
         // SKProductsRequest
         
         if #available(iOS 13, *) {
-            SetDelegate().hook(onlyIf: prefs.isSideload)
+            SetDelegate().hook(onlyIf: prefs.isSideloaded)
         } else {
-            SetDelegate12().hook(onlyIf: prefs.isSideload)
+            SetDelegate12().hook(onlyIf: prefs.isSideloaded)
         }
         
         // URLSession
