@@ -1,3 +1,4 @@
+import Jinx
 import StoreKit
 
 struct SetDelegate12: Hook {
@@ -10,7 +11,7 @@ struct SetDelegate12: Hook {
     let `class`: AnyClass? = SKProductsRequest.self
     let selector: Selector = sel_registerName("setDelegate:")
     let replacement: T = { target, cmd, delegate in
-        let orig: T = PowPow.unwrap(SetDelegate12.self)!
+        let orig: T = PowPow.orig(SetDelegate12.self)!
         let tella: SatellaDelegate = .shared
         
         tella.delegates.append(delegate)

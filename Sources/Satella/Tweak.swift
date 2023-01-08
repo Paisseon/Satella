@@ -1,17 +1,15 @@
+import Jinx
 import Foundation
 
 struct Tweak {
-    static let config: Config = .jinx
-    
     static func ctor() {
         guard ProcessInfo.processInfo.arguments[0].hasPrefix("/var/containers/Bundle/Application"),
-              Bundle.main.bundleIdentifier?.hasPrefix("com.apple.") != true,
-              let data: Data = try? .init(contentsOf: URL(fileURLWithPath: "/var/mobile/Library/Preferences/emt.paisseon.satella.plist"))
+              Bundle.main.bundleIdentifier?.hasPrefix("com.apple.") != true
         else {
             return
         }
         
-        let prefs: Preferences = (try? PropertyListDecoder().decode(Preferences.self, from: data)) ?? .init()
+        let prefs: Preferences = .shared
         
         guard prefs.shouldInject() else {
             return
@@ -52,4 +50,9 @@ struct Tweak {
         DyldGetImageName().hook(onlyIf: prefs.isStealth)
         ObjcGetClass().hook(onlyIf: prefs.isStealth)
     }
+}
+
+@_cdecl("jinx_entry")
+func jinx_entry() {
+    Tweak.ctor()
 }

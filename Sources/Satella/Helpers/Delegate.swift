@@ -1,12 +1,6 @@
 import StoreKit
 
 final class SatellaDelegate: NSObject, SKProductsRequestDelegate {
-    // MARK: Lifecycle
-
-    override private init() {
-        super.init()
-    }
-
     // MARK: Public
 
     public var delegates: [SKProductsRequestDelegate] = []
@@ -31,11 +25,9 @@ final class SatellaDelegate: NSObject, SKProductsRequestDelegate {
         
         // Get the list of identifier names
         
-        let internalRequest: Any? = request
-            .value(forKey: "_productsRequestInternal")
-        let internalIdentifiers: Set<String> = (internalRequest as? NSObject)?
-            .value(forKey: "_productIdentifiers") as! Set<String>
-        let identifiers: [String] = Array(internalIdentifiers)
+        let internalRequest: NSObject? = request.value(forKey: "_productsRequestInternal") as? NSObject
+        let internalIdentifiers: Set<String>? = internalRequest?.value(forKey: "_productIdentifiers") as? Set<String>
+        let identifiers: [String] = Array(internalIdentifiers ?? [])
         
         // Create an SKProduct for each identifier
         
@@ -65,4 +57,3 @@ final class SatellaDelegate: NSObject, SKProductsRequestDelegate {
         }
     }
 }
-

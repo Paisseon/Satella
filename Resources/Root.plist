@@ -14,7 +14,7 @@
 			<key>packageNameOverride</key>
 			<string>Satella</string>
 			<key>icon</key>
-			<string>ic0n.png</string>
+			<string>icon.png</string>
 			<key>packageIdentifier</key>
 			<string>emt.paisseon.satella</string>
 		</dict>
@@ -34,7 +34,7 @@
 			<key>defaults</key>
 			<string>emt.paisseon.satella</string>
 			<key>key</key>
-			<string>enabled</string>
+			<string>isEnabled</string>
 			<key>label</key>
 			<string>Enable</string>
 		</dict>
@@ -44,11 +44,11 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
-			<true/>
+			<false/>
 			<key>defaults</key>
 			<string>emt.paisseon.satella</string>
 			<key>key</key>
-			<string>receipts</string>
+			<string>isReceipt</string>
 			<key>label</key>
 			<string>Receipts</string>
 		</dict>
@@ -58,11 +58,11 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
-			<true/>
+			<false/>
 			<key>defaults</key>
 			<string>emt.paisseon.satella</string>
 			<key>key</key>
-			<string>observer</string>
+			<string>isObserver</string>
 			<key>label</key>
 			<string>Observer</string>
 		</dict>
@@ -76,7 +76,7 @@
 			<key>defaults</key>
 			<string>emt.paisseon.satella</string>
 			<key>key</key>
-			<string>sideloaded</string>
+			<string>isSideloaded</string>
 			<key>label</key>
 			<string>Sideloaded Apps</string>
 		</dict>
@@ -90,9 +90,9 @@
 			<key>defaults</key>
 			<string>emt.paisseon.satella</string>
 			<key>key</key>
-			<string>stealth</string>
+			<string>isStealth</string>
 			<key>label</key>
-			<string>Stealth 🧪</string>
+			<string>Stealth</string>
 		</dict>
 		<dict>
 			<key>PostNotification</key>
@@ -104,7 +104,7 @@
 			<key>defaults</key>
 			<string>emt.paisseon.satella</string>
 			<key>key</key>
-			<string>price</string>
+			<string>isPriceZero</string>
 			<key>label</key>
 			<string>0,00 Price</string>
 		</dict>
@@ -124,7 +124,7 @@
 			<key>defaults</key>
 			<string>emt.paisseon.satella</string>
 			<key>key</key>
-			<string>globalInjection</string>
+			<string>isGloballyInjected</string>
 			<key>label</key>
 			<string>Global Injection</string>
 		</dict>
@@ -173,7 +173,7 @@
 			<key>subtitle</key>
 			<string>View on GitHub</string>
 			<key>url</key>
-			<string>https://github.com/Paisseon/Satella2</string>
+			<string>https://github.com/Paisseon/Satella</string>
 		</dict>
 		<dict>
 			<key>cellClass</key>
@@ -185,21 +185,32 @@
 			<key>subtitle</key>
 			<string>The best jailbreak Discord server</string>
 			<key>url</key>
-			<string>https://discord.gg/VM2ZVWqxsj</string>
+			<string>https://discord.gg/cypwn</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
 			<string>
-	Do you know wherein lies the sin?
-	It wasn&apos;t in the partaking of the fruit of the tree.
+	The search for meaning is a lonely journey
+	Through a world that&apos;s cold and unforgiving
+	We thought that we had found our freedom
+	But it was only an illusion, a fleeting moment of bliss
 	
-	Do you know wherein lies the sin?
-	It wasn&apos;t in lending an ear to the serpent&apos;s enticements.
+	We left our past behind, thinking we could start anew
+	But the chains of our past lives still held us in their grip
+	No matter how far we ran, we could not escape
+	The ghosts of our past haunting us with every step we took
 	
-	Do you still not know wherein lies the sin?
-	Therein lies your sin.</string>
+	We thought that freedom meant a chance to find our purpose
+	But what we found was only emptiness and despair
+	We realised that true freedom comes from within
+	From letting go of the pain and the hurt of our past
+	
+	Only then can we truly start to heal
+	And find the meaning and purpose that we seek
+	We must face our demons, and forgive those who have wronged us
+	In order to break the shackles that bind us and finally be free</string>
 		</dict>
 	</array>
 	<key>title</key>

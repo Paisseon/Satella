@@ -1,2 +1,2 @@
 .mod_init_func
-.quad _jinxInit
+.quad _jinx_entry

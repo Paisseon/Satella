@@ -1,3 +1,4 @@
+import Jinx
 import StoreKit
 
 struct TransactionDate: Hook {
