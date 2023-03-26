@@ -13,9 +13,9 @@ USING_JINX = 1
 
 # Processes die if they are killed
 
-INSTALL_TARGET_PROCESSES = adorablehome
+INSTALL_TARGET_PROCESSES = SpringBoard
 
-# SPM compatibility layer
+# Make Jinx work from SPM
 
 XCDD_TOP = $(HOME)/Library/Developer/Xcode/DerivedData/
 XCDD_MID = $(shell basename $(XCDD_TOP)/$(PWD)*)
@@ -26,7 +26,6 @@ JINX_LOC = $(XCDD_TOP)$(XCDD_MID)$(XCDD_BOT)
 
 LIBRARY_NAME = Satella
 $(LIBRARY_NAME)_FILES = Sources/load.s $(shell find Sources/$(LIBRARY_NAME) -name '*.swift') $(shell find $(JINX_LOC) -name '*.swift')
-$(LIBRARY_NAME)_LIBRARIES = mryipc
 
 BUNDLE_NAME = SatellaPrefs
 $(BUNDLE_NAME)_FILES = $(shell find Sources/$(BUNDLE_NAME) -name '*.swift')

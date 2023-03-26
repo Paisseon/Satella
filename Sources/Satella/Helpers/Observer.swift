@@ -16,7 +16,7 @@ final class SatellaObserver: NSObject, SKPaymentTransactionObserver {
 
         for transaction in transactions {
             for purchase in purchases {
-                if purchase === transaction {
+                guard transaction !== purchase else {
                     return
                 }
             }
@@ -24,6 +24,8 @@ final class SatellaObserver: NSObject, SKPaymentTransactionObserver {
             current.append(transaction)
             purchases.append(transaction)
         }
+        
+        // Send the transaction list to the real observers
 
         for observer in observers {
             observer.paymentQueue(queue, updatedTransactions: current)

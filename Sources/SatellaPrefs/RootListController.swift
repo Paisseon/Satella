@@ -13,6 +13,7 @@ class RootListController: HBRootListController {
                 return specifiers
             }
         }
+        
         set {
             super.specifiers = newValue
         }
@@ -30,6 +31,9 @@ class RootListController: HBRootListController {
     }
 	
     @objc func respring() {
+        let isShuffle: Bool = access("/Library/MobileSubstrate/DynamicLibraries/shuffle.dylib", F_OK) == 0
+        let retURL: URL? = .init(string: "prefs:root=\(isShuffle ? "Tweaks&path=" : "")Satella")
+        
         if #available(iOS 13, *) {
             let blurView: UIVisualEffectView = .init(
                 effect: UIBlurEffect(style: .systemChromeMaterial)
@@ -48,14 +52,10 @@ class RootListController: HBRootListController {
                     blurView.alpha = 1.0
                 }
             ) { _ in
-                HBRespringController.respringAndReturn(
-                    to: URL(string: "prefs:root=Satella")
-                )
+                HBRespringController.respringAndReturn(to: retURL)
             }
         } else {
-            HBRespringController.respringAndReturn(
-                to: URL(string: "prefs:root=Satella")
-            )
+            HBRespringController.respringAndReturn(to: retURL)
         }
     }
 }

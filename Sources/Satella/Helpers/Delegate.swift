@@ -1,21 +1,17 @@
 import StoreKit
 
 final class SatellaDelegate: NSObject, SKProductsRequestDelegate {
-    // MARK: Public
-
-    public var delegates: [SKProductsRequestDelegate] = []
-
-    // MARK: Internal
-
     static let shared: SatellaDelegate = .init()
-
+    var delegates: [SKProductsRequestDelegate] = []
+    var products: [SKProduct] = []
+    
     func productsRequest(
         _ request: SKProductsRequest,
         didReceive response: SKProductsResponse
     ) {
-        // If the response contains products, the app is not sideloaded, so we should treat it normally
+        // If the app is not sideloaded, pass orig values
         
-        if !response.products.isEmpty {
+        guard response.products.isEmpty else {
             for delegate in delegates {
                 delegate.productsRequest(request, didReceive: response)
             }
@@ -23,31 +19,30 @@ final class SatellaDelegate: NSObject, SKProductsRequestDelegate {
             return
         }
         
-        // Get the list of identifier names
+        // We only need to set the products list once
         
-        let internalRequest: NSObject? = request.value(forKey: "_productsRequestInternal") as? NSObject
-        let internalIdentifiers: Set<String>? = internalRequest?.value(forKey: "_productIdentifiers") as? Set<String>
-        let identifiers: [String] = Array(internalIdentifiers ?? [])
-        
-        // Create an SKProduct for each identifier
-        
-        var products: [SKProduct] = []
-        
-        for identifier in identifiers {
-            let locale: Locale = .init(identifier: "da_DK")
-            let product: SKProduct = .init()
-            let price: NSDecimalNumber = 0.01
+        if products.isEmpty {
+            let _request: AnyObject? = request.value(forKey: "_productsRequestInternal") as? AnyObject
+            let _identifiers: Set<String>? = _request?.value(forKey: "_productIdentifiers") as? Set<String>
+            let identifiers: [String] = .init(_identifiers ?? [])
             
-            product.setValue(price, forKey: "price")
-            product.setValue(locale, forKey: "priceLocale")
-            product.setValue(identifier, forKey: "productIdentifier")
-            product.setValue(identifier, forKey: "localizedDescription")
-            product.setValue(identifier, forKey: "localizedTitle")
-            
-            products.append(product)
+            for identifier in identifiers {
+                let product: SKProduct = .init()
+                let price: NSDecimalNumber = 0.01
+                
+                product.setValuesForKeys([
+                    "price": price,
+                    "priceLocale": Locale(identifier: "da_DK"),
+                    "productIdentifier": identifier,
+                    "localizedDescription": identifier,
+                    "localizedTitle": identifier
+                ])
+                
+                products.append(product)
+            }
         }
         
-        // Send an array of fake products to the real delegate, then clear the local array
+        // Send a fake response so the app recognises products without App Store connection
         
         let fakeResponse: SKProductsResponse = .init()
         fakeResponse.setValue(products, forKey: "products")

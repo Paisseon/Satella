@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.7
 
 import PackageDescription
 import Foundation
@@ -50,7 +50,7 @@ let swiftFlags: [String] = [
     "-resource-dir", theos.resources
 ]
 
-let package = Package(
+let package: Package = .init(
     name: "Satella",
     platforms: [.iOS(theos.target)],
     products: [
@@ -60,7 +60,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/Paisseon/Jinx.git", from: "1.0.0")
+        .package(url: "https://github.com/Paisseon/Jinx.git", branch: "development")
     ],
     targets: [
         .target(

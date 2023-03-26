@@ -1,4 +1,46 @@
-import mryipc
+import Foundation
+
+// MARK: - Preferences
+
+final class Preferences {
+    // MARK: Lifecycle
+
+    private init() {
+        let truePrefs: _Preferences = .init()
+
+        apps = truePrefs.get(for: "apps", default: [String]())
+        isEnabled = truePrefs.get(for: "isEnabled", default: true)
+        isGloballyInjected = truePrefs.get(for: "isGloballyInjected", default: false)
+        isObserver = truePrefs.get(for: "isObserver", default: false)
+        isPriceZero = truePrefs.get(for: "isPriceZero", default: false)
+        isReceipt = truePrefs.get(for: "isReceipt", default: false)
+        isSideloaded = truePrefs.get(for: "isSideloaded", default: false)
+    }
+
+    // MARK: Internal
+
+    static let shared: Preferences = .init()
+
+    let apps: [String]
+    let isEnabled: Bool
+    let isGloballyInjected: Bool
+    let isObserver: Bool
+    let isPriceZero: Bool
+    let isReceipt: Bool
+    let isSideloaded: Bool
+
+    func shouldInject() -> Bool {
+        guard isEnabled else {
+            return false
+        }
+
+        if !isGloballyInjected {
+            return apps.contains(Bundle.main.bundleIdentifier ?? "")
+        }
+
+        return true
+    }
+}
 
 // MARK: - _Preferences
 
@@ -22,12 +64,17 @@ private struct _Preferences {
                 kCFPreferencesAnyHost
             ) as? [String: Any] ?? [:]
         } else {
-            let center: MRYIPCCenter = .init(named: "lilliana.jinx.ipc")
-
-            dict = center.callExternalMethod(
-                sel_registerName("preferencesFor:"),
-                withArguments: "emt.paisseon.satella"
-            ) as? [String: Any] ?? [:]
+            let prefsURL: URL = .init(fileURLWithPath: "/var/mobile/Library/Preferences/\(domain).plist")
+            
+            guard access(prefsURL.path, F_OK) == 0,
+                  let data: Data = try? .init(contentsOf: prefsURL),
+                  let plist = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil)
+            else {
+                dict = [:]
+                return
+            }
+            
+            dict = plist as? [String: Any] ?? [:]
         }
     }
 
@@ -43,48 +90,4 @@ private struct _Preferences {
     // MARK: Private
 
     private let dict: [String: Any]
-}
-
-// MARK: - Preferences
-
-final class Preferences {
-    // MARK: Lifecycle
-
-    private init() {
-        let truePrefs: _Preferences = .init()
-
-        apps = truePrefs.get(for: "apps", default: [String]())
-        isEnabled = truePrefs.get(for: "isEnabled", default: true)
-        isGloballyInjected = truePrefs.get(for: "isGloballyInjected", default: false)
-        isObserver = truePrefs.get(for: "isObserver", default: false)
-        isPriceZero = truePrefs.get(for: "isPriceZero", default: false)
-        isReceipt = truePrefs.get(for: "isReceipt", default: false)
-        isSideloaded = truePrefs.get(for: "isSideloaded", default: false)
-        isStealth = truePrefs.get(for: "isStealth", default: false)
-    }
-
-    // MARK: Internal
-
-    static let shared: Preferences = .init()
-
-    let apps: [String]
-    let isEnabled: Bool
-    let isGloballyInjected: Bool
-    let isObserver: Bool
-    let isPriceZero: Bool
-    let isReceipt: Bool
-    let isSideloaded: Bool
-    let isStealth: Bool
-    
-    func shouldInject() -> Bool {
-        guard isEnabled else {
-            return false
-        }
-        
-        if !isGloballyInjected {
-            return apps.contains(Bundle.main.bundleIdentifier ?? "")
-        }
-        
-        return true
-    }
 }

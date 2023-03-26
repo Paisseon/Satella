@@ -90,23 +90,9 @@
 			<key>defaults</key>
 			<string>emt.paisseon.satella</string>
 			<key>key</key>
-			<string>isStealth</string>
-			<key>label</key>
-			<string>Stealth</string>
-		</dict>
-		<dict>
-			<key>PostNotification</key>
-			<string>emt.paisseon.satella.prefschanged</string>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>emt.paisseon.satella</string>
-			<key>key</key>
 			<string>isPriceZero</string>
 			<key>label</key>
-			<string>0,00 Price</string>
+			<string>0,01 Price</string>
 		</dict>
 		<dict>
 			<key>cell</key>
