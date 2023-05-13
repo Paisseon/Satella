@@ -1,48 +1,34 @@
 # Basic environment configuration
 
-SYSROOT = $(THEOS)/sdks/iPhoneOS16.0.sdk/
-ARCHS = arm64 arm64e
-TARGET = iphone:clang:latest:12.2
+export SYSROOT = $(THEOS)/sdks/iPhoneOS16.0.sdk/
+export TARGET = iphone:clang:latest:12.2
+export ROOTLESS = 0
 
 # Theos optimisations
 
-FINALPACKAGE = 1
-DEBUG = 0
-THEOS_LEAN_AND_MEAN = 1
-USING_JINX = 1
+export FINALPACKAGE = 1
+export DEBUG = 0
+export THEOS_LEAN_AND_MEAN = 1
+export USING_JINX = 1
 
-# Processes die if they are killed
+# Define subprojects
 
-INSTALL_TARGET_PROCESSES = SpringBoard
-
-# Make Jinx work from SPM
-
-XCDD_TOP = $(HOME)/Library/Developer/Xcode/DerivedData/
-XCDD_MID = $(shell basename $(XCDD_TOP)/$(PWD)*)
-XCDD_BOT = /SourcePackages/checkouts/Jinx/Sources/Jinx
-JINX_LOC = $(XCDD_TOP)$(XCDD_MID)$(XCDD_BOT)
-
-# Define included files, imported frameworks, etc.
-
-LIBRARY_NAME = Satella
-$(LIBRARY_NAME)_FILES = Sources/load.s $(shell find Sources/$(LIBRARY_NAME) -name '*.swift') $(shell find $(JINX_LOC) -name '*.swift')
-
-BUNDLE_NAME = SatellaPrefs
-$(BUNDLE_NAME)_FILES = $(shell find Sources/$(BUNDLE_NAME) -name '*.swift')
-$(BUNDLE_NAME)_CFLAGS = -fobjc-arc
-$(BUNDLE_NAME)_INSTALL_PATH = /Library/PreferenceBundles
-$(BUNDLE_NAME)_FRAMEWORKS = Preferences
-$(BUNDLE_NAME)_EXTRA_FRAMEWORKS = AltList Cephei CepheiPrefs
+SUBPROJECTS += Prefs Tweak
 
 # Theos makefiles to include
 
 include $(THEOS)/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/aggregate.mk
-include $(THEOS_MAKE_PATH)/bundle.mk
-include $(THEOS_MAKE_PATH)/library.mk
 
-# Add the preferences to PreferenceLoader
+# Rootless support? with a question mark
 
+ifeq ($(ROOTLESS),1)
 internal-stage::
-	$(ECHO_NOTHING)mkdir -p "$(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences"$(ECHO_END)
-	$(ECHO_NOTHING)cp Resources/entry.plist "$(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/$(BUNDLE_NAME).plist"$(ECHO_END)
+	@$(PRINT_FORMAT_MAKING) "Moving files to rootless paths"
+	$(ECHO_NOTHING)mkdir -p "$(THEOS_STAGING_DIR)/var/jb/Library"$(ECHO_END)
+	$(ECHO_NOTHING)mv "$(THEOS_STAGING_DIR)/Library" "$(THEOS_STAGING_DIR)/var/jb"$(ECHO_END)
+
+before-package::
+	@$(PRINT_FORMAT_MAKING) "Patching control file architecture"
+	$(ECHO_NOTHING)sed -i '' 's/iphoneos-arm/iphoneos-arm64/' "$(THEOS_STAGING_DIR)/DEBIAN/control"$(ECHO_END)
+endif
